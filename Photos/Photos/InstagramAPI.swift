@@ -9,6 +9,19 @@
 import Foundation
 
 class InstagramAPI {
+    var searchKey: String
+    var poploc: String
+    
+    init (searchKey: String) {
+        self.searchKey = searchKey
+        self.poploc = "a"
+    }
+    
+    init (poploc: String) {
+        self.poploc = poploc
+        self.searchKey = "a"
+    }
+    
     /* Connects with the Instagram API and pulls resources from the server. */
     func loadPhotos(completion: (([Photo]) -> Void)!) {
         /* 
@@ -24,29 +37,43 @@ class InstagramAPI {
          */
         // FILL ME IN
         var url: NSURL
-
-        let task = NSURLSession.sharedSession().dataTaskWithURL(url) {
+        if self.poploc == "pop" {
+            url = Utils.getPopularURL()
+        } else if self.poploc == "loc" {
+            url = Utils.getBerkeleyURL()
+        } else {
+            url = Utils.getHashtagURL(self.searchKey)
+        }
+        let task = NSURLSession.sharedSession().dataTaskWithURL(url, completionHandler: {
             (data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
             if error == nil {
                 //FIX ME
-                var photos: [Photo]!
-                do {
-                    let feedDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
-                    // FILL ME IN, REMEMBER TO USE FORCED DOWNCASTING
-                    
-                    
-                    // DO NOT CHANGE BELOW
-                    let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-                    dispatch_async(dispatch_get_global_queue(priority, 0)) {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            completion(photos)
+                if data != nil {
+                    var photos: [Photo] = []
+                    do {
+                        let feedDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                        // FILL ME IN, REMEMBER TO USE FORCED DOWNCASTING
+                        let arr = feedDictionary.objectForKey("data") as? [[String:AnyObject]]
+                        if arr != nil {
+                            for photo in arr! {
+                                let photoObj = Photo(data: photo)
+                                photos.append(photoObj)
+                            }
                         }
+                    
+                        // DO NOT CHANGE BELOW
+                        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+                        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+                            dispatch_async(dispatch_get_main_queue()) {
+                                completion(photos)
+                            }
+                        }
+                    } catch let error as NSError {
+                        print("ERROR: \(error.localizedDescription)")
                     }
-                } catch let error as NSError {
-                    print("ERROR: \(error.localizedDescription)")
                 }
             }
-        }
+        })
         task.resume()
     }
 }

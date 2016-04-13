@@ -1,30 +1,30 @@
 //
-//  PhotosCollectionViewController.swift
+//  BerkeleyCollectionViewController.swift
 //  Photos
 //
-//  Created by Gene Yoo on 11/3/15.
-//  Copyright © 2015 iOS DeCal. All rights reserved.
+//  Created by Vishal Satish on 4/12/16.
+//  Copyright © 2016 iOS DeCal. All rights reserved.
 //
 
 import UIKit
 
-class PhotosCollectionViewController: UICollectionViewController {
+class BerkeleyCollectionViewController: UICollectionViewController {
     var photos: [Photo]!
     var selectedPhoto: Photo!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let api = InstagramAPI(poploc: "pop")
+        
+        let api = InstagramAPI(poploc: "loc")
         api.loadPhotos(didLoadPhotos)
         // FILL ME IN
-        self.navigationController?.navigationBar.topItem?.title = "Popular"
+        self.navigationController?.navigationBar.topItem?.title = "UC Berkeley"
         self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Marker Felt", size: 25)!, NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
         self.view.backgroundColor = UIColor(red: 250.0/255.0, green: 247.0/255.0, blue: 245.0/255.0, alpha: 1.0)
     }
-
-    /* 
+    
+    /*
      * IMPLEMENT ANY COLLECTION VIEW DELEGATE METHODS YOU FIND NECESSARY
      * Examples include cellForItemAtIndexPath, numberOfSections, etc.
      */
@@ -54,8 +54,8 @@ class PhotosCollectionViewController: UICollectionViewController {
         return true
     }
     
-    /* Creates a session from a photo's url to download data to instantiate a UIImage. 
-       It then sets this as the imageView's image. */
+    /* Creates a session from a photo's url to download data to instantiate a UIImage.
+     It then sets this as the imageView's image. */
     func loadImageForCell(photo: Photo, imageView: UIImageView) {
         let url = NSURL(string: photo.lurl)
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!, completionHandler: {
@@ -94,10 +94,6 @@ class PhotosCollectionViewController: UICollectionViewController {
         }
     }
     
-    @IBAction func unwindToPhotosCollectionViewController(sender: UIStoryboardSegue) {
-    
-    }
-    
     /* Completion handler for API call. DO NOT CHANGE */
     func didLoadPhotos(photos: [Photo]) {
         self.photos = photos
@@ -105,4 +101,3 @@ class PhotosCollectionViewController: UICollectionViewController {
     }
     
 }
-

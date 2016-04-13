@@ -27,4 +27,16 @@ class Utils {
         let urlStr = "https://api.instagram.com/v1/tags/\(hashtag)/media/recent?client_id=\(cid)"
         return NSURL(string: urlStr)!
     }
+    
+    class func getUserURL(userid: String) -> NSURL {
+        let cid = clientID()
+        let urlStr = "https://api.instagram.com/v1/users/\(userid)/media/recent?client_id=\(cid)"
+        return NSURL(string: urlStr)!
+    }
+    
+    class func getBerkeleyURL() -> NSURL {
+        let cid = clientID()
+        let urlStr = "https://api.instagram.com/v1/locations/35637/media/recent?client_id=\(cid)"
+        return NSURL(string: urlStr)!
+    }
 }
